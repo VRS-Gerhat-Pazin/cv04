@@ -131,7 +131,31 @@ void SystemClock_Config(void)
 
 uint8_t checkButtonState(GPIO_TypeDef* PORT, uint8_t PIN, uint8_t edge, uint8_t samples_window, uint8_t samples_required)
 {
-	  //type your code for "checkButtonState" implementation here:
+	uint8_t button_state = 0, timeout = 0;
+
+	while(button_state < samples_required && timeout < samples_window)
+	{
+		if(((PORT->IDR & (1 << PIN)) >> PIN) == edge)/*LL_GPIO_IsInputPinSet(PORT, PIN)*/
+		{
+			button_state += 1;
+		}
+		else
+		{
+			button_state = 0;
+		}
+
+		timeout += 1;
+		LL_mDelay(1);
+	}
+
+	if((button_state >= samples_required) && (timeout <= samples_window))
+	{
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
 }
 
 
