@@ -55,13 +55,17 @@ int main(void)
 
   /* Configure GPIOB-4 pin as an input pin - button */
 
-	  //type your code for GPIO configuration here:
-
+  GPIOB->MODER &= ~(0b11<<8);
+  GPIOB->PUPDR |= (1<<8);
+  GPIOB->PUPDR &= ~(1<<9);
 
   /* Configure GPIOA-4 pin as an output pin - LED */
 
-	  //type your code for GPIO configuration here:
-
+  GPIOA->MODER |= (1<<8);
+  GPIOA->MODER &= ~(1<<9);
+  GPIOA->OTYPER &= ~(1<<4);
+  GPIOA->OSPEEDR &= ~(0b11<<8);
+  RCC->AHBENR |= (0b11<<17);
 
   while (1)
   {
