@@ -52,7 +52,7 @@ int main(void)
 
   	  //type your code for EXTI configuration (priority, enable EXTI, setup EXTI for input pin, trigger edge) here:
   NVIC->ISER[0] |= (1 << 10);
-  //NVIC->IP[10] |= 2;
+  NVIC->IP[10] |= 2;
 
   EXTI->IMR |= EXTI_IMR_MR4;
   EXTI->RTSR &= ~EXTI_RTSR_TR4;
