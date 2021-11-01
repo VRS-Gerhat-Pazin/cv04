@@ -51,21 +51,23 @@ int main(void)
   /* Configure external interrupt - EXTI*/
 
   	  //type your code for EXTI configuration (priority, enable EXTI, setup EXTI for input pin, trigger edge) here:
-  NVIC->ISER[0] |= (1 << 4);
-  NVIC->IP[10] |= 2;
+  NVIC->ISER[0] |= (1 << 10);
+  //NVIC->IP[10] |= 2;
 
   EXTI->IMR |= EXTI_IMR_MR4;
   EXTI->RTSR &= ~EXTI_RTSR_TR4;
   EXTI->FTSR |= EXTI_FTSR_TR4;
-  SYSCFG->EXTICR[1] &= (0b111 << 0);
+  SYSCFG->EXTICR[1] &= ~(0b111 << 0);
   SYSCFG->EXTICR[1] |= (1 << 0);
 
 
   /* Configure GPIOB-4 pin as an input pin - button */
+  RCC->AHBENR |= (0b11<<17);
 
   GPIOB->MODER &= ~(0b11<<8);
+  GPIOB->PUPDR &= ~(0b11<<8);
   GPIOB->PUPDR |= (1<<8);
-  GPIOB->PUPDR &= ~(1<<9);
+
 
   /* Configure GPIOA-4 pin as an output pin - LED */
 
@@ -73,21 +75,20 @@ int main(void)
   GPIOA->MODER &= ~(1<<9);
   GPIOA->OTYPER &= ~(1<<4);
   GPIOA->OSPEEDR &= ~(0b11<<8);
-  RCC->AHBENR |= (0b11<<17);
+
 
   while (1)
   {
 	  // Modify the code below so it sets/resets used output pin connected to the LED
 	  if(switch_state)
 	  {
-		  GPIOB->BSRR |= GPIO_BSRR_BS_3;
-		  for(uint16_t i=0; i<0xFF00; i++){}
-		  GPIOB->BRR |= GPIO_BRR_BR_3;
-		  for(uint16_t i=0; i<0xFF00; i++){}
+		  // led on
+		  GPIOA->BSRR |= (1 << 4);
 	  }
 	  else
 	  {
-		  GPIOB->BRR |= GPIO_BRR_BR_3;
+		  // led off
+		  GPIOA->BRR |= (1 << 4);
 	  }
   }
 
